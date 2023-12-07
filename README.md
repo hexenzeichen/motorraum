@@ -1,0 +1,2 @@
+# Example:
+./run.php abc
