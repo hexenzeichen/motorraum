@@ -12,6 +12,7 @@ final class ParserTest extends TestCase
     private Parser $parser;
     private string $noResultsPage;
     private string $resultsPage;
+    private string $url = 'http://url.net';
 
     protected function setUp(): void
     {
@@ -27,43 +28,46 @@ final class ParserTest extends TestCase
 
     public function testItReturnsEmptyWhenNoResults(): void
     {
-        $result = $this->parser->parse($this->noResultsPage);
+        $result = $this->parser->parse($this->noResultsPage, $this->url);
         $this->assertEmpty($result);
     }
 
     public function testItReturnsArrayWhenNoResults(): void
     {
-        $result = $this->parser->parse($this->noResultsPage);
+        $result = $this->parser->parse($this->noResultsPage, $this->url);
         $this->assertIsArray($result);
     }
 
     public function testItReturnsNotEmptyWhenResultsPresent(): void
     {
-        $result = $this->parser->parse($this->resultsPage);
+        $result = $this->parser->parse($this->resultsPage, $this->url);
         $this->assertNotEmpty($result);
     }
 
     public function testItReturns40ItemsWhenResultsPresent(): void
     {
-        $result = $this->parser->parse($this->resultsPage);
+        $result = $this->parser->parse($this->resultsPage, $this->url);
         $this->assertEquals(40, count($result));
     }
 
     public function testItParsesStatusCorrectly(): void
     {
-        $result = $this->parser->parse($this->resultsPage);
-        $this->assertEquals('Protected: Registered/protected', $result[37]['status']);
+        $result = $this->parser->parse($this->resultsPage, $this->url);
+        $items = $result[37]->toArray();
+        $this->assertEquals('Protected: Registered/protected', $items[4]);
     }
 
     public function testItParsesClassCorrectly(): void
     {
-        $result = $this->parser->parse($this->resultsPage);
-        $this->assertEquals('16,38,41,44', $result[37]['class']);
+        $result = $this->parser->parse($this->resultsPage, $this->url);
+        $items = $result[37]->toArray();
+        $this->assertEquals('16,38,41,44', $items[3]);
     }
 
     public function testItParsesNameCorrectly(): void
     {
-        $result = $this->parser->parse($this->resultsPage);
-        $this->assertEquals('REDIALFASHION CONNECTION THROUGHOUT THE WORLDABCDEFGHJK 1234567890', $result[9]['name']);
+        $result = $this->parser->parse($this->resultsPage, $this->url);
+        $items = $result[9]->toArray();
+        $this->assertEquals('REDIALFASHION CONNECTION THROUGHOUT THE WORLDABCDEFGHJK 1234567890', $items[2]);
     }
 }

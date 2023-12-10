@@ -6,23 +6,26 @@ use PHPUnit\Framework\TestCase;
 
 final class ApplicationTest extends TestCase
 {
-    private string $searchWord = 'abc';
-    private string $searchFormUrl = 'someurl';
-    private string $searchSubmitUrl = 'someotherurl';
-
     private Application $application;
+
+    private GrabberInterface $grabberMock;
+
+    private StorageInterface $storageMock;
 
     protected function setUp(): void
     {
+        $this->grabberMock = $this->createMock(GrabberInterface::class);
+        $this->storageMock = $this->createMock(StorageInterface::class);
         $this->application = new Application(
-            $this->createMock(GrabberInterface::class),
-            $this->createMock(StorageInterface::class)
+            $this->grabberMock,
+            $this->storageMock
         );
     }
 
     public function testApplicationRuns(): void
     {
-        //$this->application->run();
-        $this->assertTrue(true);
+        $this->grabberMock->expects($this->exactly(1))->method('grabNextPage');
+        $this->storageMock->expects($this->exactly(1))->method('read');
+        $this->application->run();
     }
 }
